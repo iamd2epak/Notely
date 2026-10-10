@@ -1,0 +1,41 @@
+{
+  "expo": {
+    "name": "Notely",
+    "slug": "notely",
+    "version": "1.7.1",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "backgroundColor": "#F6F5FB",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.d2epak.notely"
+    },
+    "android": {
+      "package": "com.d2epak.notely",
+      "versionCode": 13,
+      "adaptiveIcon": {
+        "backgroundColor": "#7B6CF0",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-font",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 140,
+          "resizeMode": "contain",
+          "backgroundColor": "#F6F5FB"
+        }
+      ],
+      "expo-sharing"
+    ]
+  }
+}
