@@ -11,8 +11,8 @@ Expo SDK 57 / React Native 0.86 (new architecture) notes app for Android. Local 
 - `src/data.js`: model and ordering. `src/storage.js`: atomic file storage. `src/crypto.js` + `src/vault.js`: lock encryption. `src/backup.js`: export/import.
 
 ## Build and test
-- A push to `main` builds the APK and publishes a GitHub Release. The workflow deletes older releases.
-- Use `[skip ci]` in a commit message unless the user says "export apk".
+- The APK workflow is manual only (`workflow_dispatch`). For code changes just commit and push; never build the APK.
+- Run the workflow only when the user says "export apk". It publishes a Release tagged from `app.json` version + versionCode and deletes older releases.
 - Test in the web build (`npx expo start --web`) with Playwright. Don't use an Android emulator.
 - Android compile check: `EXPO_OFFLINE=1 npx expo export --platform android --output-dir /tmp/export`
 - Bump `version` and `versionCode` in `app.json` for each release.
