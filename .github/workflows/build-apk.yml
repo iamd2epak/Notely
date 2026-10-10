@@ -1,10 +1,7 @@
 name: Build Notely APK
 
+# Manual only: the APK is built when it is started from the Actions tab (or by Claude on request).
 on:
-  push:
-    branches: [main]
-    paths-ignore:
-      - '**/*.md'
   workflow_dispatch:
 
 # A newer push cancels a build that is still running, so no minutes are wasted.
@@ -27,7 +24,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -48,12 +45,19 @@ jobs:
       - name: Rename APK
         run: cp android/app/build/outputs/apk/release/app-release.apk Notely.apk
 
+      # Release tag comes from app.json: version + versionCode (e.g. notely-v1.7.1-13).
+      - name: Read version
+        id: ver
+        run: |
+          echo "tag=notely-v$(node -p "require('./app.json').expo.version")-$(node -p "require('./app.json').expo.android.versionCode")" >> "$GITHUB_OUTPUT"
+          echo "name=Notely v$(node -p "require('./app.json').expo.version") (build $(node -p "require('./app.json').expo.android.versionCode"))" >> "$GITHUB_OUTPUT"
+
       # The APK is published as a GitHub Release (release files don't use Actions storage).
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: notely-v1.1.${{ github.run_number }}
-          name: Notely v1.1.${{ github.run_number }}
+          tag_name: ${{ steps.ver.outputs.tag }}
+          name: ${{ steps.ver.outputs.name }}
           target_commitish: ${{ github.sha }}
           make_latest: true
           body: Download **Notely.apk** below and open it on your Android phone to install. It updates the previous version and keeps your notes.
@@ -63,7 +67,7 @@ jobs:
       - name: Remove previous APKs
         env:
           GH_TOKEN: ${{ github.token }}
-          NEW_TAG: notely-v1.1.${{ github.run_number }}
+          NEW_TAG: ${{ steps.ver.outputs.tag }}
         run: |
           gh release list --repo "$GITHUB_REPOSITORY" --limit 100 --json tagName -q '.[].tagName' \
             | grep '^notely-v' | grep -vx "$NEW_TAG" \
